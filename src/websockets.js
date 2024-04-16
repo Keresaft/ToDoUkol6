@@ -36,9 +36,17 @@ export const sendTodoListToAllConnections = async () => {
 }
 
 export const sendTodoDetails = async (idTodo) => {
-  const todoDetails = await ejs.renderFile('views/_todoDetails.ejs', {
-    todo: await getTodoById(idTodo),
+
+  const _todo = await getTodoById(idTodo)
+  let todoDetails
+
+  if(!_todo) {
+    todoDetails = await ejs.renderFile('views/_todoRemoved.ejs')
+  } else {
+  todoDetails = await ejs.renderFile('views/_todoDetail.ejs', {
+    _todo,
   })
+}
 
   for (const connection of connections) {
     connection.send(
